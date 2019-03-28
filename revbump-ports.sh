@@ -13,14 +13,16 @@ if ! which gsed >/dev/null; then
 fi
 for portfile in "$@"; do
 	if grep -Eq $'^[ \t]*revision[ \t]+[0-9]+' "$portfile"; then
-		contents=$(gsed -i -rf increase-revision.sed "$portfile")
+		gsed -i -rf increase-revision.sed "$portfile"
+	elif grep -Eq $'^[ \t]*set[ \t]+revision_client[ \t]+[0-9]+' "$portfile"; then
+		gsed -i -rf increase-revision-mysql.sed "$portfile"
 	else
 		if grep -Eq $'^[ \t]*version[ \t]+.*$' "$portfile"; then
-			contents=$(gsed -i -rf add-revision.sed "$portfile")
+			gsed -i -rf add-revision.sed "$portfile"
 		elif grep -Eq $'^[ \t]*github.setup[ \t]+.*$' "$portfile"; then
-			contents=$(gsed -i -rf add-revision-github.sed "$portfile")
+			gsed -i -rf add-revision-github.sed "$portfile"
 		elif grep -Eq $'^[ \t]*perl5.setup[ \t]+.*$' "$portfile"; then
-			contents=$(gsed -i -rf add-revision-perl5.sed "$portfile")
+			gsed -i -rf add-revision-perl5.sed "$portfile"
 		else
 			noversion+=("$portfile")
 			continue
